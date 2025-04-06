@@ -4,6 +4,7 @@ import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
 import cryptoImg from "../../Assets/Projects/crypto app.jpg";
 import todoImg from "../../Assets/Projects/todo.jpg";
+import fruitionImg from "../../Assets/Projects/fruition.png";
 
 function Projects() {
   return (
@@ -38,10 +39,33 @@ function Projects() {
               demoLink="https://to-do-list-sable-rho.vercel.app/"
             />
           </Col>
+
+          <Col md={4} className="project-card">
+            <ProjectCard
+              imgPath={fruitionImg}
+              isBlog={false}
+              title="Fruition motors"
+              description="A reliable agency for purchasing your vechiles"
+              ghLink="https://github.com/ph-dev-labs/fruition-motors"
+              demoLink="https://www.fruitionmotors.com/"
+            />
+          </Col>
+          <Col md={4} className="project-card">
+            <ProjectCard
+              imgPath={fruitionImg}
+              isBlog={false}
+              title="Fruition motors"
+              description="A reliable agency for purchasing your vechiles"
+              ghLink="https://github.com/ph-dev-labs/fruition-motors"
+              demoLink="https://www.fruitionmotors.com/"
+            />
+          </Col>
         </Row>
       </Container>
     </Container>
   );
 }
+
+
 
 export default Projects;
