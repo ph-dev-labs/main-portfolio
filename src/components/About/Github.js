@@ -1,21 +1,33 @@
 import React from "react";
 import GitHubCalendar from "react-github-calendar";
-import { Row } from "react-bootstrap";
 
 function Github() {
   return (
-    <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
-      <h1 className="project-heading" style={{ paddingBottom: "20px" }}>
-        Days I <strong className="purple">Code</strong>
-      </h1>
-      <GitHubCalendar
-        username="ph-dev-labs"
-        blockSize={15}
-        blockMargin={5}
-        color="#c084f5"
-        fontSize={16}
-      />
-    </Row>
+    <section className="wrap section" aria-labelledby="gh-title">
+      <div className="section-head reveal">
+        <p className="eyebrow">Consistency</p>
+        <h2 id="gh-title" className="section-title">
+          Days I <em>code.</em>
+        </h2>
+        <a
+          href="https://github.com/ph-dev-labs"
+          target="_blank"
+          rel="noreferrer"
+          className="link-arrow section-head__aside"
+        >
+          @ph-dev-labs <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <div className="gh-cal reveal">
+        <GitHubCalendar
+          username="ph-dev-labs"
+          blockSize={13}
+          blockMargin={4}
+          color="#e8461e"
+          fontSize={13}
+        />
+      </div>
+    </section>
   );
 }
 
