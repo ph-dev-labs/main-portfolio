@@ -1,8 +1,14 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-test('renders learn react link', () => {
+jest.mock("react-pdf", () => ({ Document: () => null, Page: () => null, pdfjs: { GlobalWorkerOptions: {} } }));
+jest.mock("react-github-calendar", () => () => null);
+jest.mock("./components/Home/HeroScene", () => () => null);
+
+window.scrollTo = () => {};
+
+test("hero states the value proposition and offers a contact path", () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/frontends that ship/i);
+  expect(screen.getAllByRole("link", { name: /let's talk/i }).length).toBeGreaterThan(0);
 });

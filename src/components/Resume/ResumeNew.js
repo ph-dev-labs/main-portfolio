@@ -1,54 +1,62 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
-import Particle from "../Particle";
-import pdf from "../../Assets/NWOSUCHIMZIEI_Resume_5003 (2).pdf";
-import { AiOutlineDownload } from "react-icons/ai";
+import React, { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import { site, primaryContact } from "../../data/site";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function ResumeNew() {
-  const [width, setWidth] = useState(1200);
+  const holder = useRef(null);
+  const [width, setWidth] = useState(800);
 
   useEffect(() => {
-    setWidth(window.innerWidth);
+    const measure = () => holder.current && setWidth(Math.min(holder.current.clientWidth, 900));
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
   return (
-    <div>
-      <Container fluid className="resume-section">
-        <Particle />
-        <Row style={{ justifyContent: "center", position: "relative" }}>
-          <Button
-            variant="primary"
-            href={pdf}
-            target="_blank"
-            style={{ maxWidth: "250px" }}
+    <div className="page">
+      <header className="wrap page-head page-head--row">
+        <div>
+          <p className="eyebrow rise" style={{ "--i": 0 }}>
+            Résumé
+          </p>
+          <h1 className="page-title rise" style={{ "--i": 1 }}>
+            The one-page <em>version.</em>
+          </h1>
+        </div>
+        <div className="hero__actions rise" style={{ "--i": 2 }}>
+          <a className="btn btn--solid btn--lg" href={site.resume} download={site.resumeFileName}>
+            Download PDF <span aria-hidden="true">↓</span>
+          </a>
+          <a
+            className="btn btn--ghost btn--lg"
+            href={primaryContact.href}
+            {...(primaryContact.external ? { target: "_blank", rel: "noreferrer" } : {})}
           >
-            <AiOutlineDownload />
-            &nbsp;Download CV
-          </Button>
-        </Row>
+            Get in touch
+          </a>
+        </div>
+      </header>
 
-        <Row className="resume">
-          <Document file={pdf} className="d-flex justify-content-center">
-            <Page pageNumber={1} scale={width > 786 ? 1.7 : 0.6} />
-          </Document>
-        </Row>
-
-        <Row style={{ justifyContent: "center", position: "relative" }}>
-          <Button
-            variant="primary"
-            href={pdf}
-            target="_blank"
-            style={{ maxWidth: "250px" }}
-          >
-            <AiOutlineDownload />
-            &nbsp;Download CV
-          </Button>
-        </Row>
-      </Container>
+      <section className="wrap resume rise" style={{ "--i": 3 }} ref={holder}>
+        <Document
+          file={site.resume}
+          loading={<div className="resume__skeleton" aria-label="Loading résumé" />}
+          error={
+            <p className="resume__error">
+              Couldn't preview the PDF —{" "}
+              <a href={site.resume} download={site.resumeFileName}>
+                download it instead
+              </a>
+              .
+            </p>
+          }
+        >
+          <Page pageNumber={1} width={width} renderTextLayer={false} />
+        </Document>
+      </section>
     </div>
   );
 }

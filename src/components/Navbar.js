@@ -1,112 +1,64 @@
-import React, { useState } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
-import { CgFolder, CgGitFork } from "react-icons/cg";
-import {
-  AiFillStar,
-  AiOutlineHome,
-  AiOutlineFundProjectionScreen,
-  AiOutlineUser,
-} from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { site } from "../data/site";
 
-import { CgFileDocument } from "react-icons/cg";
+const links = [
+  { to: "/project", label: "Work" },
+  { to: "/about", label: "About" },
+  { to: "/resume", label: "Résumé" },
+];
 
 function NavBar() {
-  const [expand, updateExpanded] = useState(false);
-  const [navColour, updateNavbar] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
 
-  function scrollHandler() {
-    if (window.scrollY >= 20) {
-      updateNavbar(true);
-    } else {
-      updateNavbar(false);
-    }
-  }
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-  window.addEventListener("scroll", scrollHandler);
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <Navbar
-      expanded={expand}
-      fixed="top"
-      expand="md"
-      className={navColour ? "sticky" : "navbar"}
-    >
-      <Container>
-        <Navbar.Brand href="/" className="d-flex">
-          <span className="dwd">Tested Type</span>
-        </Navbar.Brand>
-        <Navbar.Toggle
-          aria-controls="responsive-navbar-nav"
-          onClick={() => {
-            updateExpanded(expand ? false : "expanded");
-          }}
+    <header className={`nav ${scrolled ? "nav--scrolled" : ""} ${open ? "nav--open" : ""}`}>
+      <div className="wrap nav__inner">
+        <Link to="/" className="nav__brand" aria-label={`${site.name}, home`}>
+          <span className="nav__mark" aria-hidden="true">
+            NC
+          </span>
+          <span className="nav__name">{site.name}</span>
+        </Link>
+
+        <button
+          className="nav__toggle"
+          aria-expanded={open}
+          aria-controls="nav-menu"
+          onClick={() => setOpen((v) => !v)}
         >
-          <span></span>
-          <span></span>
-          <span></span>
-        </Navbar.Toggle>
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="ms-auto" defaultActiveKey="#home">
-            <Nav.Item>
-              <Nav.Link as={Link} to="/" onClick={() => updateExpanded(false)}>
-                <AiOutlineHome style={{ marginBottom: "2px" }} /> Home
-              </Nav.Link>
-            </Nav.Item>
+          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
+        </button>
 
-            <Nav.Item>
-              <Nav.Link
-                as={Link}
-                to="/about"
-                onClick={() => updateExpanded(false)}
-              >
-                <AiOutlineUser style={{ marginBottom: "2px" }} /> About
-              </Nav.Link>
-            </Nav.Item>
-
-            <Nav.Item>
-              <Nav.Link
-                as={Link}
-                to="/project"
-                onClick={() => updateExpanded(false)}
-              >
-                <AiOutlineFundProjectionScreen
-                  style={{ marginBottom: "2px" }}
-                />{" "}
-                Projects
-              </Nav.Link>
-            </Nav.Item>
-
-
-            <Nav.Item>
-              <Nav.Link
-                as={Link}
-                to="/resume"
-                onClick={() => updateExpanded(false)}
-              >
-                <CgFileDocument style={{ marginBottom: "2px" }} /> Resume
-              </Nav.Link>
-            </Nav.Item>
-
-         
-
-            <Nav.Item className="fork-btn">
-              <Button
-                href="https://github.com/ph-dev-labs"
-                target="_blank"
-                className="fork-btn-inner"
-              >
-                <CgGitFork style={{ fontSize: "1.2em" }} />{" "}
-                <AiFillStar style={{ fontSize: "1.1em" }} />
-              </Button>
-            </Nav.Item>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+        <nav id="nav-menu" className="nav__menu" aria-label="Primary">
+          {links.map((l) => (
+            <NavLink
+              key={l.to}
+              to={l.to}
+              className={({ isActive }) => `nav__link ${isActive ? "is-active" : ""}`}
+            >
+              {l.label}
+            </NavLink>
+          ))}
+          <a href="#contact" className="btn btn--solid btn--sm nav__cta" onClick={() => setOpen(false)}>
+            Let's talk
+          </a>
+        </nav>
+      </div>
+    </header>
   );
 }
 
